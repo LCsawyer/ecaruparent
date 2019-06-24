@@ -1,0 +1,26 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: messageInform-server
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://223.3.79.10:3306/media?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: abc123
+    type: com.alibaba.druid.pool.DruidDataSource
+  rabbitmq:
+    host: 223.3.65.243
+    port: 5672
+    username: saber
+    password: 123456
+eureka:
+  client:
+    service-url:
+      defaultZone: http://223.3.65.243:8761/eureka/
+mybatis:
+  type-aliases-package: com.lcsaber.pojo
+
+
+
+

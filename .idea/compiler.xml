@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="eucaruserver" />
+        <module name="messageInformServer" />
+        <module name="servicezuul" />
+        <module name="springcloudconfig" />
+        <module name="websocketTest" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="cloud-ida-config" target="1.8" />
+      <module name="cloudidaconfig" target="1.8" />
+      <module name="consumeribbon" target="1.8" />
+      <module name="eurekaConsume" target="1.8" />
+      <module name="rabbitmqProvider" target="1.8" />
+      <module name="serverProvider" target="1.8" />
+      <module name="shiro" target="1.5" />
+      <module name="springCloudRabbitmq" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
