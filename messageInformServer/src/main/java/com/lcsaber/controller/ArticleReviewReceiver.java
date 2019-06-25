@@ -3,7 +3,6 @@ package com.lcsaber.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lcsaber.pojo.ArticerReviewInfo;
 import com.lcsaber.pojo.UserInformInfo;
-import com.lcsaber.pojo.UserReviewInfo;
 import com.lcsaber.service.InformService;
 import com.lcsaber.util.JsonUtil;
 import org.springframework.amqp.core.ExchangeTypes;

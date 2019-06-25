@@ -12,10 +12,12 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -51,6 +53,9 @@ public class MyFilter extends ZuulFilter {
         if (request.getRequestURI().toString().contains("/login")){
             return false;
         }
+        if(request.getRequestURI().toString().contains("/swagger")){
+            return false;
+        }
         return true;
     }
 
@@ -62,6 +67,7 @@ public class MyFilter extends ZuulFilter {
         }
         RequestContext ctx = RequestContext.getCurrentContext();
         HttpServletRequest request = ctx.getRequest();
+
         String authorization = request.getHeader("Authorization");
         if (authorization==null || authorization.equals("")){
             ctx.setSendZuulResponse(false);
@@ -77,9 +83,11 @@ public class MyFilter extends ZuulFilter {
         JWTToken token = new JWTToken(authorization);
         subject.login(token);
         RequestUtil requestUtil = new RequestUtil(request);
-        requestUtil.setUserId(JWTUtil.getUsername(authorization));
+        String userId = JWTUtil.getUsername(authorization);
+        requestUtil.setUserId(userId);
         sender.send(requestUtil.toString());
-
+        //ctx.setRequestQueryParams();
+        ctx.addZuulRequestHeader("userId",userId);
         return true;
     }
 }

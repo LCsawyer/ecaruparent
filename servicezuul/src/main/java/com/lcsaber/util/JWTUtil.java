@@ -14,7 +14,7 @@ import java.util.Date;
  * @Date: 2019/6/17 14:30
  */
 public class JWTUtil {
-    private static final long EXPIRE_TIME = 5*60*1000;
+    private static final long EXPIRE_TIME = 24*60*60*1000;
 
     /**
      * 校验token是否正确
