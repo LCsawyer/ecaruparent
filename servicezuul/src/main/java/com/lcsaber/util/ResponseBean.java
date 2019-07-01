@@ -8,16 +8,28 @@ public class ResponseBean {
     // http 状态码
     private int code;
 
+    //是否成功
+    private boolean isSuccess;
+
     // 返回信息
     private String msg;
 
     // 返回的数据
     private Object data;
 
-    public ResponseBean(int code, String msg, Object data) {
+    public ResponseBean(int code,boolean isSuccess, String msg, Object data) {
         this.code = code;
+        this.isSuccess = isSuccess;
         this.msg = msg;
         this.data = data;
+    }
+
+    public boolean isSuccess() {
+        return isSuccess;
+    }
+
+    public void setSuccess(boolean success) {
+        isSuccess = success;
     }
 
     public int getCode() {

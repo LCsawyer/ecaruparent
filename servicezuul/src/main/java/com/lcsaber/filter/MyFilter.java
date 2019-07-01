@@ -1,10 +1,7 @@
 package com.lcsaber.filter;
 
 import com.lcsaber.shiron.JWTToken;
-import com.lcsaber.util.JWTUtil;
-import com.lcsaber.util.RequestUtil;
-import com.lcsaber.util.ResponseBean;
-import com.lcsaber.util.Sender;
+import com.lcsaber.util.*;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.exception.ZuulException;
@@ -12,12 +9,14 @@ import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.zuul.filters.ZuulProperties;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
+import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -53,9 +52,24 @@ public class MyFilter extends ZuulFilter {
         if (request.getRequestURI().toString().contains("/login")){
             return false;
         }
-        if(request.getRequestURI().toString().contains("/swagger")){
+
+//        if(request.getRequestURI().toString().contains("swagger")){
+//            return false;
+//        }
+//        if (request.getRequestURI().toString().endsWith(".js") || request.getRequestURI().toString().endsWith(".css")){
+//            return false;
+//        }
+        if (request.getRequestURI().toString().contains("api-docs")){
             return false;
         }
+        if (request.getRequestURI().startsWith("/search")){
+            return false;
+        }
+
+        if (request.getRequestURI().matches("/article/articles/\\d+/\\d+")){
+            return false;
+        }
+
         return true;
     }
 
@@ -69,9 +83,16 @@ public class MyFilter extends ZuulFilter {
         HttpServletRequest request = ctx.getRequest();
 
         String authorization = request.getHeader("Authorization");
+        HttpServletResponse response = ctx.getResponse();
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Methods", "*");
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         if (authorization==null || authorization.equals("")){
             ctx.setSendZuulResponse(false);
-            ResponseBean responseBean = new ResponseBean(401,"未登录",null);
+            ResponseBean responseBean = new ResponseBean(CodeData.API_NOT_PER,false,
+                    "没有该接口的访问权限",null);
             try{
                 ctx.getResponse().getWriter().write(responseBean.toString());
             }
@@ -81,13 +102,30 @@ public class MyFilter extends ZuulFilter {
             return false;
         }
         JWTToken token = new JWTToken(authorization);
-        subject.login(token);
+        try{
+            subject.login(token);
+        }catch (Exception e){
+        }
+        if (!subject.isAuthenticated())
+        {
+            ctx.setSendZuulResponse(false);
+            ResponseBean responseBean = new ResponseBean(CodeData.ACCOUNT_ERROR,false,"验证失败",null);
+            try{
+                ctx.getResponse().getWriter().write(responseBean.toString());
+            }
+            catch (IOException e){
+                e.printStackTrace();
+            }
+            return false;
+        }
         RequestUtil requestUtil = new RequestUtil(request);
         String userId = JWTUtil.getUsername(authorization);
         requestUtil.setUserId(userId);
         sender.send(requestUtil.toString());
         //ctx.setRequestQueryParams();
         ctx.addZuulRequestHeader("userId",userId);
+//        System.out.println(userId);
+
         return true;
     }
 }

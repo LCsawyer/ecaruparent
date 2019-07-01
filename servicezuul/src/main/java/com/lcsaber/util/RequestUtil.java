@@ -12,17 +12,20 @@ public class RequestUtil {
     private String requestBody = "";
     private String uri = "";
     private String userId = "";
+    private String ip="";
 
     public RequestUtil(HttpServletRequest request) {
         uri = request.getRequestURI();
         Enumeration<String> headerNames = request.getHeaderNames();
         String name = "";
-
+        ip = request.getRemoteAddr();
         while(headerNames.hasMoreElements()){
             name=headerNames.nextElement();
             headers+= "\""+name+"\":\""+request.getHeader(name)+"\",";
         }
-        headers = headers.substring(0,headers.length()-1)+"}";
+        headers += "\"ip\":"+"\""+ip+"\",";
+        String method = request.getMethod();
+        headers+= "\"method\":\""+method+"\"}";
         try{
             BufferedReader br = request.getReader();
             String bstr = "";
