@@ -83,12 +83,6 @@ public class MyFilter extends ZuulFilter {
         HttpServletRequest request = ctx.getRequest();
 
         String authorization = request.getHeader("Authorization");
-        HttpServletResponse response = ctx.getResponse();
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Methods", "*");
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("text/html;charset=UTF-8");
         if (authorization==null || authorization.equals("")){
             ctx.setSendZuulResponse(false);
             ResponseBean responseBean = new ResponseBean(CodeData.API_NOT_PER,false,
